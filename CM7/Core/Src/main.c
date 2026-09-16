@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "csp/csp.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

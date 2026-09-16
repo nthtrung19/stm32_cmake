@@ -36,6 +36,9 @@ project(${CMAKE_PROJECT_NAME})
 # Create an executable object type
 add_executable(${CMAKE_PROJECT_NAME})
 
+#Set system name   
+set(CSP_SYSTEM_NAME "freertos")
+
 # Include mx-generated
 include("mx-generated.cmake")
 
@@ -50,6 +53,18 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
 
 # Enable CMake support for ASM and C languages
 enable_language(C ASM)
+
+# Add include paths for FreeRTOS
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Middlewares/Third_Party/FreeRTOS/Source/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F 
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Inc 
+)
+
+add_library(freertos_kernel INTERFACE)
+target_link_libraries(freertos_kernel INTERFACE FreeRTOS)
+
+add_subdirectory(${CMAKE_SOURCE_DIR}/../lib/libcsp ${CMAKE_CURRENT_BINARY_DIR}/libcsp)
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
@@ -67,8 +82,9 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 )
 
 # Add linked libraries
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
+target_link_libraries(${CMAKE_PROJECT_NAME}
     # Add user defined libraries
+    csp
 )
 
 # Remove wrong libob.a library dependency when using cpp files
@@ -78,9 +94,6 @@ list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)
 if((CMAKE_C_STANDARD EQUAL 90) OR (CMAKE_C_STANDARD EQUAL 99))
     message(ERROR "Generated code requires C11 or higher")
 endif()
-
-
-
 
 
 
